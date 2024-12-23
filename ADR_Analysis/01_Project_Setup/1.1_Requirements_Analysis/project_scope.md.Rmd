@@ -1,5 +1,104 @@
----
-title: "project_scope.md"
-output: html_document
----
+
+# 项目范围界定 (Project Scope)
+
+**项目名称:** 基于R的药物不良反应 (ADR) 分析项目
+
+**版本:** 1.0
+
+**日期:** 2024年10月12日 (请根据实际情况更新)
+
+**1. 项目目标 (Project Goals)**
+
+本项目的核心目标是利用 R 语言及其强大的数据分析和可视化能力，对药物不良反应 (ADR) 数据进行深入分析，以补充和扩展现有 SAS 项目的分析能力。具体目标包括：
+
+*   **探索性数据分析 (EDA):**  使用 R 对 ADR 数据进行初步探索，发现潜在的模式、趋势和异常。
+*   **高级信号检测:**  在现有 SAS 分析的基础上，利用 R 实现更高级的信号检测方法，例如 BCPNN、GPS 等。
+*   **可视化分析:**  创建清晰、有效的图表和可视化结果，更直观地展示 ADR 分析的发现。
+*   **生成定制化报告:**  利用 R Markdown 生成灵活、可重复的分析报告，突出 R 在 ADR 分析中的贡献。
+*   **数据整合与处理:**  实现从不同来源 (包括 SAS 输出) 的 ADR 数据的有效整合和处理。
+*   **模型验证与评估:**  利用 R 进行模型内部验证、敏感性分析和外部验证（如果数据可用）。
+
+**2. 关键问题 (Key Questions)**
+
+本项目旨在回答以下关键问题：
+
+*   使用 R 能否在 ADR 数据中发现 SAS 分析中未识别出的潜在信号？
+*   不同 ADR 事件的时间趋势和关联性如何？能否通过可视化更清晰地展现？
+*   R 在 ADR 分析中能够提供哪些独特的见解或方法？
+*   如何有效地整合 R 和 SAS 的分析结果，形成更全面的 ADR 分析报告？
+*   R 在数据清洗、预处理和特征工程方面有哪些优势可以利用？
+
+**3. 范围包含 (Scope Inclusions)**
+
+本项目明确包含以下工作内容：
+
+*   **环境搭建:**  配置 R 环境，安装必要的 R 包。
+*   **数据导入与准备:**  从 CSV 文件 (包括原始数据和 SAS 导出的数据) 中导入 ADR 数据，并进行必要的清洗、转换和整合。
+*   **描述性统计分析:**  计算 ADR 数据的基本统计量，例如频数、均值、中位数等。
+*   **相关性分析:**  探索不同 ADR 事件之间的相关性。
+*   **时间趋势分析:**  分析 ADR 事件随时间变化的趋势。
+*   **信号检测:**  实现 PRR、ROR 以及更高级的信号检测方法 (如 BCPNN, GPS)。
+*   **结果可视化:**  使用 ggplot2 或其他 R 包创建各种图表，例如趋势图、热图等。
+*   **报告生成:**  使用 R Markdown 生成包含代码、结果和解释的分析报告。
+*   **内部验证和敏感性分析:**  对 R 分析的结果进行内部验证和敏感性分析。
+*   **与 SAS 项目结果的比对和整合:**  比较 R 和 SAS 的分析结果，并将 R 的贡献整合到最终报告中。
+*   **相关文档编写:**  编写项目范围、技术方案、分析计划、数据字典等文档。
+
+**4. 范围排除 (Scope Exclusions)**
+
+本项目明确不包含以下工作内容：
+
+*   **SAS 代码的编写和维护:**  本项目专注于 R 分析部分，不涉及对现有 SAS 代码的修改或维护。
+*   **原始数据的收集和管理:**  本项目使用现有的原始数据，不涉及新的数据收集工作。
+*   **超出预定义的数据范围的分析:**  分析将仅限于 `02_Data/raw_data/` 和 `02_Data/processed_data/from_sas/` 目录下的数据。
+*   **生产环境的部署和维护:**  本项目为分析项目，不涉及将 R 代码部署到生产环境。
+*   **对外部数据库的直接访问和操作:**  数据分析将基于本地文件，不涉及直接连接和操作外部数据库。
+
+**5. 数据来源 (Data Sources)**
+
+本项目使用的数据来源于以下位置：
+
+*   `02_Data/raw_data/hospital_adr.csv`
+*   `02_Data/raw_data/faers_data.csv`
+*   `02_Data/raw_data/national_adr.csv`
+*   `02_Data/processed_data/from_sas/clean_data_sas.csv` (以及 `other_sas_outputs/` 中的相关文件)
+
+**6. 交付成果 (Deliverables)**
+
+本项目将交付以下成果：
+
+*   **代码:**  所有 R 脚本 (位于 `03_Scripts/`)。
+*   **数据:**  处理后的 R 数据集 (位于 `02_Data/processed_data/`)。
+*   **表格:**  生成的分析表格 (位于 `04_Output/tables/`)。
+*   **图形:**  生成的图表和可视化结果 (位于 `04_Output/figures/`)。
+*   **报告:**  使用 R Markdown 生成的分析报告 (HTML 和 PDF 格式，位于 `04_Output/reports/`)。
+*   **文档:**
+    *   `01_Project_Setup/1.1_Requirements_Analysis/project_scope.md` (本项目范围界定)
+    *   `01_Project_Setup/1.1_Requirements_Analysis/data_requirements.md` (数据需求分析)
+    *   `01_Project_Setup/1.1_Requirements_Analysis/technical_方案.md` (技术方案 - R 部分)
+    *   `01_Project_Setup/1.3_Planning_Documents/analysis_plan_r.md` (R 分析计划)
+    *   `02_Data/processed_data/data_integration_notes.md` (数据整合说明)
+    *   `03_Scripts/3.1_Data_Cleaning/data_cleaning_notes.md` (数据清理说明)
+    *   `03_Scripts/3.3_Signal_Detection/signal_detection_notes.md` (信号检测说明)
+    *   `README.md` (项目说明文件，更新 R 相关内容)
+*   **中期报告:** `06_Reports/interim_report_r_contribution.docx` (突出 R 贡献)
+*   **最终报告:** `06_Reports/final_report_integrated.docx` (整合 R 和 SAS 结果)
+
+**7. 主要干系人 (Key Stakeholders)**
+
+*   王薇
+
+**8. 假设 (Assumptions)**
+
+*   原始数据质量满足分析要求。
+*   所需的 R 包可以成功安装和加载。
+*   团队成员具备必要的 R 编程和统计分析技能。
+*   在项目执行过程中，可以及时获取所需的 SAS 输出数据。
+
+**9. 未来展望 (Future Considerations - 可选)**
+
+*   探索将 R 分析结果集成到现有 SAS 报告流程的可能性。
+*   开发交互式仪表板以更动态地展示 ADR 分析结果。
+*   研究使用 R 进行实时 ADR 监测的可能性。
+
 

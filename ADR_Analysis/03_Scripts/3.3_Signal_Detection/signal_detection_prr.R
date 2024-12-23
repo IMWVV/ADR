@@ -1,28 +1,83 @@
-# 该脚本用于计算比例失衡分析 (PRR)
-
+# 加载必要的包
 library(dplyr)
-library(readr)
 
-# 读取分析用数据
-analysis_data <- readRDS("02_Data/processed_data/clean_data_r.rds")
+# 1. 读取清洗后的数据
+# 根据你在 clean_and_preprocess.R 中保存的文件名进行调整
+# 这里假设你有一个包含药物和事件信息的统一数据集，
+# 如果没有，你需要先进行数据整合
+adr_data_clean <- readRDS("02_Data/processed_data/your_unified_adr_data.rds")
 
-# 计算 PRR
-prr_data <- analysis_data %>%
-  group_by(DRUG_NAME, ADR_TYPE) %>%
-  summarise(n11 = n(), .groups = 'drop') %>%
-  right_join(analysis_data %>% group_by(DRUG_NAME) %>% summarise(n1_ = n(), .groups = 'drop'), by = "DRUG_NAME") %>%
-  right_join(analysis_data %>% group_by(ADR_TYPE) %>% summarise(n_1 = n(), .groups = 'drop'), by = "ADR_TYPE") %>%
-  mutate(n__ = nrow(analysis_data)) %>%
-  mutate(PRR = (n11 / n1_) / (n_1 / n__),
-         PRR_SE = sqrt(1/n11 - 1/n1_ + 1/n_1 - 1/n__),
-         PRR_LB = exp(log(PRR) - 1.96 * PRR_SE),
-         PRR_UB = exp(log(PRR) + 1.96 * PRR_SE),
-         signal_prr = ifelse(PRR >= 2 & n11 >= 3 & PRR_LB > 1, 1, 0)) %>%
-  filter(!is.na(PRR))
+# 假设你的数据集中包含 'drug' (药物名称) 和 'event' (不良事件名称) 列
 
-print("PRR 计算结果：")
-print(prr_data)
+# 2. 计算 PRR
 
-# 可以将结果保存到文件
-saveRDS(prr_data, "04_Output/tables/prr_results.rds")
-write.csv(prr_data, "04_Output/tables/prr_results.csv", row.names = FALSE)
+calculate_prr <- function(data, drug_col = "drug", event_col = "event") {
+  # a: 报告了特定药物和特定事件的病例数
+  a <- data %>%
+    filter(!!sym(drug_col) == current_drug, !!sym(event_col) == current_event) %>%
+    nrow()
+  
+  # b: 报告了特定药物和除该事件之外的其他事件的病例数
+  b <- data %>%
+    filter(!!sym(drug_col) == current_drug, !!sym(event_col) != current_event) %>%
+    nrow()
+  
+  # c: 报告了该特定事件和除该药物之外的其他药物的病例数
+  c <- data %>%
+    filter(!!sym(drug_col) != current_drug, !!sym(event_col) == current_event) %>%
+    nrow()
+  
+  # d: 报告了除该特定药物和该特定事件之外的其他药物和其他事件的病例数
+  d <- data %>%
+    filter(!!sym(drug_col) != current_drug, !!sym(event_col) != current_event) %>%
+    nrow()
+  
+  prr <- a / (a + b) / (c / (c + d))
+  return(prr)
+}
+
+# 获取所有独特的药物和事件组合
+drug_event_combinations <- adr_data_clean %>%
+  distinct(drug, event)
+
+# 初始化一个空的数据框来存储 PRR 结果
+prr_results <- data.frame(drug = character(), event = character(), prr = numeric(), stringsAsFactors = FALSE)
+
+# 循环计算每个药物-事件组合的 PRR
+for (i in 1:nrow(drug_event_combinations)) {
+  current_drug <- drug_event_combinations$drug[i]
+  current_event <- drug_event_combinations$event[i]
+  
+  prr_value <- calculate_prr(adr_data_clean) # 注意这里需要传递完整的数据集
+  
+  prr_results <- prr_results %>%
+    add_row(drug = current_drug, event = current_event, prr = prr_value)
+}
+
+# 3. 添加其他指标 (可选)
+# 例如：计算病例数 a, b, c, d 等
+prr_results <- prr_results %>%
+  mutate(
+    a = adr_data_clean %>% filter(drug == .data$drug, event == .data$event) %>% nrow(),
+    b = adr_data_clean %>% filter(drug == .data$drug, event != .data$event) %>% nrow(),
+    c = adr_data_clean %>% filter(drug != .data$drug, event == .data$event) %>% nrow(),
+    d = adr_data_clean %>% filter(drug != .data$drug, event != .data$event) %>% nrow()
+  )
+
+# 4. 设置信号阈值 (根据你的项目设定)
+prr_threshold <- 2
+n_threshold <- 3 # 例如，至少报告 3 例
+
+signals_prr <- prr_results %>%
+  filter(prr >= prr_threshold, a >= n_threshold)
+
+# 5. 保存 PRR 结果
+output_path_tables <- "04_Output/tables/"
+if (!dir.exists(output_path_tables)) {
+  dir.create(output_path_tables, recursive = TRUE)
+}
+
+write.csv(prr_results, paste0(output_path_tables, "signal_detection_prr_all.csv"), row.names = FALSE)
+write.csv(signals_prr, paste0(output_path_tables, "signal_detection_prr_signals.csv"), row.names = FALSE)
+
+cat("PRR 信号检测完成。\n")

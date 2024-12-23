@@ -1,5 +1,65 @@
 ---
-title: " generate_report"
-output: html_document
+title: "药物不良反应 (ADR) 分析报告"
+author: "你的名字"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    toc: true
+    latex_engine: xelatex
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+# 加载必要的包
+library(readr)
+library(knitr)
+library(ggplot2)
+
+# 设定输入路径 (根据你的实际情况修改)
+output_report_path <- "04_Output/intermediate_results/"
+
+
+引言
+本报告总结了对药物不良反应 (ADR) 数据的分析结果。
+
+数据
+我们使用了来自多个来源的 ADR 数据... 
+
+描述性统计分析
+# 读取格式化后的描述性统计表格
+descriptive_stats_formatted <- readRDS(paste0(output_report_path, "descriptive_stats_formatted.rds"))
+if (!is.null(descriptive_stats_formatted)) {
+  kable(descriptive_stats_formatted, caption = "描述性统计结果")
+} else {
+  cat("描述性统计表格数据未找到。\n")
+}
+
+信号检测结果 (PRR)
+# 读取格式化后的 PRR 结果表格
+signal_results_prr_formatted <- readRDS(paste0(output_report_path, "signal_results_prr_formatted.rds"))
+if (!is.null(signal_results_prr_formatted)) {
+  kable(signal_results_prr_formatted, caption = "信号检测结果 (PRR)")
+} else {
+  cat("PRR 结果表格数据未找到。\n")
+}
+
+时间趋势分析
+# 包含趋势图
+knitr::include_graphics(paste0(output_report_path, "trend_plots_for_report.png"))
+
+其他分析结果
+
+
+结论
+
+
+参考文献
+
+
+
+
 

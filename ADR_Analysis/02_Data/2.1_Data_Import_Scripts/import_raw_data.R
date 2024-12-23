@@ -1,30 +1,61 @@
-# 该脚本用于导入原始的 CSV 数据文件
-
+# 加载必要的包
 library(readr)
-library(dplyr)
+library(dplyr) # 方便后续的数据处理 (可选，但常用)
 
-# 设置数据文件路径
-raw_data_path <- "02_Data/raw_data/"
+# 定义数据文件路径
+hospital_adr_file <- "02_Data/raw_data/hospital_adr.csv"
+faers_data_file <- "02_Data/raw_data/faers_data.csv"
+national_adr_file <- "02_Data/raw_data/national_adr.csv"
 
-# 导入医院 ADR 数据
-hospital_adr <- read_csv(paste0(raw_data_path, "hospital_adr.csv"))
-cat("医院 ADR 数据已成功导入，行数：", nrow(hospital_adr), "\n")
+# 导入 hospital_adr.csv
+if (file.exists(hospital_adr_file)) {
+  hospital_adr <- read_csv(hospital_adr_file,
+                           col_types = cols( # 可以根据实际情况指定列类型，提高效率
+                             # 例如：
+                             # patient_id = col_character(),
+                             # age = col_integer(),
+                             # report_date = col_date(format = "%Y-%m-%d")
+                           ))
+  cat("成功导入 hospital_adr.csv\n")
+} else {
+  cat(paste("错误：文件", hospital_adr_file, "不存在！\n"))
+}
 
-# 导入 FDA FAERS 数据
-faers_data <- read_csv(paste0(raw_data_path, "faers_data.csv"))
-cat("FDA FAERS 数据已成功导入，行数：", nrow(faers_data), "\n")
+# 导入 faers_data.csv
+if (file.exists(faers_data_file)) {
+  faers_data <- read_csv(faers_data_file,
+                         col_types = cols()) # 根据实际情况指定列类型
+  cat("成功导入 faers_data.csv\n")
+} else {
+  cat(paste("错误：文件", faers_data_file, "不存在！\n"))
+}
 
-# 导入国家监测中心数据
-national_adr <- read_csv(paste0(raw_data_path, "national_adr.csv"))
-cat("国家监测中心数据已成功导入，行数：", nrow(national_adr), "\n")
+# 导入 national_adr.csv
+if (file.exists(national_adr_file)) {
+  national_adr <- read_csv(national_adr_file,
+                           col_types = cols()) # 根据实际情况指定列类型
+  cat("成功导入 national_adr.csv\n")
+} else {
+  cat(paste("错误：文件", national_adr_file, "不存在！\n"))
+}
 
-# 可以选择将导入的数据保存为 R 的 RDS 格式，方便后续快速加载
-saveRDS(hospital_adr, "02_Data/processed_data/hospital_adr.rds")
-saveRDS(faers_data, "02_Data/processed_data/faers_data.rds")
-saveRDS(national_adr, "02_Data/processed_data/national_adr.rds")
+# (可选) 将导入的原始数据保存为 .rds 格式，方便后续快速读取
+output_path <- "02_Data/processed_data/"
+if (!dir.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
 
-cat("原始数据已保存为 RDS 格式到 02_Data/processed_data/ 目录\n")
+if (exists("hospital_adr")) {
+  saveRDS(hospital_adr, paste0(output_path, "hospital_adr_raw.rds"))
+  cat("hospital_adr 数据已保存为 .rds 格式。\n")
+}
+if (exists("faers_data")) {
+  saveRDS(faers_data, paste0(output_path, "faers_data_raw.rds"))
+  cat("faers_data 数据已保存为 .rds 格式。\n")
+}
+if (exists("national_adr")) {
+  saveRDS(national_adr, paste0(output_path, "national_adr_raw.rds"))
+  cat("national_adr 数据已保存为 .rds 格式。\n")
+}
 
-# 如果需要，可以将所有原始数据合并到一个数据框中
-all_raw_data <- bind_rows(hospital_adr, faers_data, national_adr)
-cat("所有原始数据已合并，总行数：", nrow(all_raw_data), "\n")
+cat("原始数据导入脚本执行完毕。\n")
