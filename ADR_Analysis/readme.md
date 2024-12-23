@@ -1,5 +1,27 @@
----
-title: "readme"
-output: html_document
----
+# 药物不良反应数据挖掘项目
+
+本项目旨在通过数据挖掘技术分析药物不良反应数据，识别潜在的药物安全信号。
+
+## 项目结构
+
+... (之前的项目结构描述)
+
+## R 语言开发说明
+
+本项目的部分分析和报告生成使用 R 语言完成。
+
+### R 环境搭建
+
+1. 确保已安装 R (>= 4.0) 和 RStudio。
+2. 运行 `01_Project_Setup/1.2_Environment_Setup/install_packages.R` 安装所需的 R 包。
+
+### R 脚本说明
+
+* `02_Data/2.1_Data_Import_Scripts/`: 包含数据导入脚本。
+* `03_Scripts/`: 包含 R 分析脚本，按功能模块组织。
+* `04_Output/`: 包含 R 生成的输出结果。
+
+### 运行 R 脚本
+
+可以直接在 RStudio 中打开并运行 `.R` 文件。
 

@@ -1,5 +1,50 @@
 ---
-title: "r_markdown_template"
+title: "药物不良反应数据挖掘报告"
+author: "WVV"
+date: "2024年10月7日"
 output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+项目概述
+本报告旨在通过 R 语言对药物不良反应数据进行挖掘和分析，以识别潜在的药物安全信号。
+
+数据导入与处理
+# 在这里导入你的数据
+library(readr)
+# 例如：
+# hospital_adr <- read_csv("02_Data/raw_data/hospital_adr.csv")
+# 在这里进行数据清洗和预处理
+library(dplyr)
+# 例如：
+# clean_data <- hospital_adr %>% ...
+
+基础分析
+描述性统计
+# 在这里进行描述性统计分析
+# 例如：
+# summary(clean_data$age)
+
+
+时间趋势分析
+# 在这里进行时间趋势分析
+library(ggplot2)
+# 例如：
+# ggplot(data = ..., aes(x = ..., y = ...)) + geom_line()
+
+信号检测
+PRR 计算结果
+# 在这里展示 PRR 计算结果
+library(knitr)
+# 例如：
+# knitr::kable(prr_results_table)
+
+结论与建议
+
+
+附录
+
 
